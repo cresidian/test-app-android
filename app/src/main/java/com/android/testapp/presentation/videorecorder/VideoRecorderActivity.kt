@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
@@ -45,20 +46,21 @@ class VideoRecorderActivity : BaseActivity() {
     private var recording: Recording? = null
     private var videoCapture: VideoCapture<Recorder>? = null
     private val cameraFacing = CameraSelector.LENS_FACING_FRONT
-    private val activityResultLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { result: Boolean? ->
-        if (ActivityCompat.checkSelfPermission(
-                this@VideoRecorderActivity,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
+    private var countDownTimer: CountDownTimer? = null
+    private var isRecording = false
+    private var lastRecordedVideoUri: Uri? = null
+    private val permissions = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
+    )
+    private val permissionRequestLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions[Manifest.permission.CAMERA] == true && permissions[Manifest.permission.RECORD_AUDIO] == true
         ) {
             initializeCamera(cameraFacing)
         }
     }
-    private var countDownTimer: CountDownTimer? = null
-    private var isRecording = false
-    private var lastRecordedVideoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,15 +71,7 @@ class VideoRecorderActivity : BaseActivity() {
     }
 
     private fun init() {
-        if (ActivityCompat.checkSelfPermission(
-                this@VideoRecorderActivity,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            activityResultLauncher.launch(Manifest.permission.CAMERA)
-        } else {
-            initializeCamera(cameraFacing)
-        }
+        requestPermissions()
         service = Executors.newSingleThreadExecutor()
         bind.btnToggleStopPlay.setOnClickListener {
             if (isRecording) {
@@ -98,7 +92,7 @@ class VideoRecorderActivity : BaseActivity() {
                     viewEvents.collect { state ->
                         when (state) {
                             is VideoRecorderViewModel.VideoRecorderViewStates.StartCountdown -> {
-                                startCountDownTimer(state.duration)
+                                //startCountDownTimer(state.duration)
                             }
                             is VideoRecorderViewModel.VideoRecorderViewStates.StartRecording -> {
                                 startRecordingVideo()
@@ -111,6 +105,19 @@ class VideoRecorderActivity : BaseActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun requestPermissions() {
+        val permissionResults = permissions.map {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }.toTypedArray()
+        if (!permissionResults.all { it }) {
+            Log.d("HERERERE", "DASDA")
+            permissionRequestLauncher.launch(permissions)
+        } else {
+            Log.d("HERERERE", "CAMEARA")
+            initializeCamera(cameraFacing)
         }
     }
 
@@ -187,6 +194,7 @@ class VideoRecorderActivity : BaseActivity() {
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(cameraFacing).build()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture)
+                startCountDownTimer(COUNT_DOWN_DURATION)
             } catch (e: ExecutionException) {
                 e.printStackTrace()
             } catch (e: InterruptedException) {
@@ -231,6 +239,7 @@ class VideoRecorderActivity : BaseActivity() {
     }
 
     companion object {
+        private const val COUNT_DOWN_DURATION = 6000L
         const val PARAM_VIDEO_EXTRA = "PARAM_VIDEO_EXTRA"
     }
 }
