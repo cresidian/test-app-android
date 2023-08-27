@@ -16,10 +16,6 @@ class VideoRecorderViewModel : BaseViewModel<VideoRecorderViewModel.VideoRecorde
         object StopRecording : VideoRecorderViewStates()
     }
 
-    init {
-        //emitEvent(VideoRecorderViewStates.StartCountdown(COUNT_DOWN_DURATION))
-    }
-
     fun startRecording() {
         viewModelScope.launch {
             emitEvent(VideoRecorderViewStates.StartRecording)
@@ -34,7 +30,7 @@ class VideoRecorderViewModel : BaseViewModel<VideoRecorderViewModel.VideoRecorde
 
 
     companion object {
-        private const val RECORDING_DURATION = 5000L
+        private const val RECORDING_DURATION = 30000L
     }
 
 }

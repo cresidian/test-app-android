@@ -113,10 +113,8 @@ class VideoRecorderActivity : BaseActivity() {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }.toTypedArray()
         if (!permissionResults.all { it }) {
-            Log.d("HERERERE", "DASDA")
             permissionRequestLauncher.launch(permissions)
         } else {
-            Log.d("HERERERE", "CAMEARA")
             initializeCamera(cameraFacing)
         }
     }
