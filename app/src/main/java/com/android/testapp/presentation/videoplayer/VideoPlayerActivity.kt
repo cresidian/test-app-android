@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.android.testapp.app.theme.TestAppTheme
-import com.android.testapp.presentation.videorecorder.VideoRecorderActivity.Companion.PARAM_VIDEO_EXTRA
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -28,7 +27,7 @@ class VideoPlayerActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    VideoPlayer(Uri.parse(intent.getStringExtra(PARAM_VIDEO_EXTRA)))
+                    //VideoPlayer(Uri.parse(intent.getStringExtra(PARAM_VIDEO_EXTRA)))
                 }
             }
         }
