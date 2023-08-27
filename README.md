@@ -48,6 +48,12 @@ Before you begin, make sure you have the following requirements:
 
 5. **Responsive Layout**: The app's layout is designed to be responsive and adapt to various Android screen sizes.
 
+
+## App Screenshot
+
+![1693179772424](https://github.com/cresidian/test-app-android/assets/28092346/b08d5900-3282-4964-b0b9-c61fe04fb5f4)
+
+
 ## Architecture
 
 The app follows the MVVM (Model-View-ViewModel) design pattern, promoting a clear separation of concerns between UI, data, and logic. At least two components have been utilized in the codebase to ensure modularity and maintainability.
