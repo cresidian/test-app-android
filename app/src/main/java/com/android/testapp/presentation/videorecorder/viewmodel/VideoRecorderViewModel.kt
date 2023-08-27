@@ -34,7 +34,7 @@ class VideoRecorderViewModel : BaseViewModel<VideoRecorderViewModel.VideoRecorde
 
 
     companion object {
-        private const val COUNT_DOWN_DURATION = 5000L
+        private const val COUNT_DOWN_DURATION = 6000L
         private const val RECORDING_DURATION = 5000L
     }
 

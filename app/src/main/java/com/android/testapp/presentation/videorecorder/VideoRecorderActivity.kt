@@ -2,14 +2,12 @@ package com.android.testapp.presentation.videorecorder
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
@@ -33,6 +31,8 @@ import com.android.testapp.databinding.ActivityVideoRecorderBinding
 import com.android.testapp.presentation.videorecorder.viewmodel.VideoRecorderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.android.testapp.R
+import com.android.testapp.presentation.videoplayer.VideoPlayerActivity
 
 
 @AndroidEntryPoint
@@ -57,6 +57,8 @@ class VideoRecorderActivity : BaseActivity() {
         }
     }
     private var countDownTimer: CountDownTimer? = null
+    private var isRecording = false
+    private var lastRecordedVideoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,27 +79,13 @@ class VideoRecorderActivity : BaseActivity() {
             initializeCamera(cameraFacing)
         }
         service = Executors.newSingleThreadExecutor()
-        bind.btnRecordToggle.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(
-                    this@VideoRecorderActivity,
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                activityResultLauncher.launch(Manifest.permission.CAMERA)
-            } else if (ActivityCompat.checkSelfPermission(
-                    this@VideoRecorderActivity,
-                    Manifest.permission.RECORD_AUDIO
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                activityResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
-            } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && ActivityCompat.checkSelfPermission(
-                    this@VideoRecorderActivity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                activityResultLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            } else {
-                startRecordingVideo()
+        bind.btnToggleStopPlay.setOnClickListener {
+            if (isRecording) {
+                stopRecordingVideo()
+            } else if (lastRecordedVideoUri != null) {
+                startActivity(Intent(this, VideoPlayerActivity::class.java).apply {
+                    putExtra(PARAM_VIDEO_EXTRA, lastRecordedVideoUri.toString())
+                })
             }
         }
         initObservers()
@@ -159,26 +147,26 @@ class VideoRecorderActivity : BaseActivity() {
                     ContextCompat.getMainExecutor(this@VideoRecorderActivity)
                 ) { videoRecordEvent: VideoRecordEvent? ->
                     if (videoRecordEvent is VideoRecordEvent.Start) {
+                        isRecording = true
+                        bind.btnToggleStopPlay.setVisible(true)
                         toggleVideoRecorderHudVisibility(false)
                     } else if (videoRecordEvent is Finalize) {
                         if (!videoRecordEvent.hasError()) {
+                            isRecording = false
+                            lastRecordedVideoUri = videoRecordEvent.outputResults.outputUri
                             toggleVideoRecorderHudVisibility(true)
-                            val msg =
-                                "Video capture succeeded: " + videoRecordEvent.outputResults
-                                    .outputUri
-                            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                            showToast(getString(R.string.response_recorded))
                         } else {
                             recording!!.close()
                             recording = null
-                            val msg =
-                                "Error: " + videoRecordEvent.error
-                            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                            showToast("${getString(R.string.error)}: ${videoRecordEvent.error}")
                         }
                     }
                 }
     }
 
     private fun stopRecordingVideo() {
+        bind.btnToggleStopPlay.setImageResource(R.drawable.ic_play)
         recording?.stop()
     }
 
@@ -224,12 +212,15 @@ class VideoRecorderActivity : BaseActivity() {
         bind.ivFaceFrame.setVisible(isShow)
         bind.tvCountdown.setVisible(isShow)
         bind.tvFeedback.setVisible(isShow)
-        bind.btnRecordToggle.setVisible(isShow)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         service?.shutdown()
         countDownTimer?.cancel()
+    }
+
+    companion object {
+        const val PARAM_VIDEO_EXTRA = "PARAM_VIDEO_EXTRA"
     }
 }
