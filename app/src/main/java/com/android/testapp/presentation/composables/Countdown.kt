@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun Countdown(onCountDownFinish:() -> Unit) {
+fun Countdown(countdownDuration: Long = 5000, onCountDownFinish: () -> Unit) {
     var timeRemaining by remember { mutableStateOf(5L) }
-    val countDownTimer = object : CountDownTimer(5000, 1000) {
+    val countDownTimer = object : CountDownTimer(countdownDuration, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             timeRemaining = millisUntilFinished / 1000
         }

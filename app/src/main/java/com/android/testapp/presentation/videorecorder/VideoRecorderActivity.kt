@@ -34,7 +34,7 @@ class VideoRecorderActivity : ComponentActivity() {
                             cameraState = cameraState,
                             camSelector = camSelector,
                         ) {
-                            // Camera Preview UI
+
                         }
                         CameraHeadsUpDisplay(this@VideoRecorderActivity, onCountDownFinish = {
 
