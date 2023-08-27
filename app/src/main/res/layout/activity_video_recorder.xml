@@ -30,7 +30,6 @@
         android:id="@+id/tvCountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
         android:textColor="@color/white"
         android:textSize="60sp"
         android:textStyle="bold"
@@ -50,6 +49,16 @@
         app:layout_constraintEnd_toEndOf="@+id/ivFaceFrame"
         app:layout_constraintStart_toStartOf="@+id/ivFaceFrame"
         app:layout_constraintTop_toBottomOf="@+id/ivFaceFrame" />
+
+    <TextView
+        android:id="@+id/tvRecordingCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/btnToggleStopPlay"

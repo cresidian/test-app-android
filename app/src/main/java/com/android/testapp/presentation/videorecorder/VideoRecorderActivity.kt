@@ -46,7 +46,6 @@ class VideoRecorderActivity : BaseActivity() {
     private var recording: Recording? = null
     private var videoCapture: VideoCapture<Recorder>? = null
     private val cameraFacing = CameraSelector.LENS_FACING_FRONT
-    private var countDownTimer: CountDownTimer? = null
     private var isRecording = false
     private var lastRecordedVideoUri: Uri? = null
     private val permissions = arrayOf(
@@ -91,14 +90,18 @@ class VideoRecorderActivity : BaseActivity() {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewEvents.collect { state ->
                         when (state) {
-                            is VideoRecorderViewModel.VideoRecorderViewStates.StartCountdown -> {
-                                //startCountDownTimer(state.duration)
-                            }
                             is VideoRecorderViewModel.VideoRecorderViewStates.StartRecording -> {
                                 startRecordingVideo()
                             }
                             is VideoRecorderViewModel.VideoRecorderViewStates.StopRecording -> {
                                 stopRecordingVideo()
+                            }
+                            is VideoRecorderViewModel.VideoRecorderViewStates.UpdateCountdown -> {
+                                if (state.isRecording) {
+                                    bind.tvRecordingCountdown.text = state.count
+                                } else {
+                                    bind.tvCountdown.text = state.count
+                                }
                             }
                             else -> {}
                         }
@@ -173,6 +176,7 @@ class VideoRecorderActivity : BaseActivity() {
     private fun stopRecordingVideo() {
         bind.btnToggleStopPlay.setImageResource(R.drawable.ic_play)
         recording?.stop()
+        viewModel.stopRecording()
     }
 
     private fun initializeCamera(cameraFacing: Int) {
@@ -192,7 +196,7 @@ class VideoRecorderActivity : BaseActivity() {
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(cameraFacing).build()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture)
-                startCountDownTimer(COUNT_DOWN_DURATION)
+                viewModel.startCountDown(false)
             } catch (e: ExecutionException) {
                 e.printStackTrace()
             } catch (e: InterruptedException) {
@@ -200,20 +204,6 @@ class VideoRecorderActivity : BaseActivity() {
             }
         }, ContextCompat.getMainExecutor(this@VideoRecorderActivity))
     }
-
-    private fun startCountDownTimer(duration: Long) {
-        countDownTimer = object : CountDownTimer(duration, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                bind.tvCountdown.text = (millisUntilFinished / 1000).toString()
-            }
-
-            override fun onFinish() {
-                viewModel.startRecording()
-            }
-        }
-        countDownTimer!!.start()
-    }
-
 
     /**
      *
@@ -233,11 +223,9 @@ class VideoRecorderActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         service?.shutdown()
-        countDownTimer?.cancel()
     }
 
     companion object {
-        private const val COUNT_DOWN_DURATION = 6000L
         const val PARAM_VIDEO_EXTRA = "PARAM_VIDEO_EXTRA"
     }
 }
