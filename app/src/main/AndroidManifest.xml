@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
     <application
         android:name=".app.TestApp"
         android:allowBackup="true"
@@ -14,20 +22,18 @@
         android:theme="@style/Theme.TestApp"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.VideoRecorderActivity"
+            android:name=".presentation.videoplayer.VideoPlayerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TestApp.NoActionBar" />
+        <activity
+            android:name=".presentation.videorecorder.VideoRecorderActivity"
             android:exported="true"
-            android:label="@string/title_activity_video_recorder"
-            android:theme="@style/Theme.TestApp">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".presentation.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.TestApp">
         </activity>
     </application>
 
