@@ -6,4 +6,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="not_connected_to_internet">Not connected to internet</string>
+    <string name="take_a_deep_breath">Take a deep breath.</string>
+    <string name="recording">Recording</string>
 </resources>
