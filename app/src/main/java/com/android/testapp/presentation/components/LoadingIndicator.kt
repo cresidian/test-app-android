@@ -1,4 +1,4 @@
-package com.android.testapp.presentation.composables
+package com.android.testapp.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator

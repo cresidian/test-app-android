@@ -1,4 +1,4 @@
-package com.android.testapp.presentation.composables
+package com.android.testapp.presentation.components
 
 import android.os.CountDownTimer
 import androidx.compose.material.Text

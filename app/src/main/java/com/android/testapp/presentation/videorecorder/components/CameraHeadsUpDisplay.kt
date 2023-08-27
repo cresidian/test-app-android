@@ -1,4 +1,4 @@
-package com.android.testapp.presentation.composables
+package com.android.testapp.presentation.components
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import com.android.testapp.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -15,7 +16,8 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun CameraHeadsUpDisplay(context: Context, onCountDownFinish: () -> Unit) {
+fun CameraHeadsUpDisplay(a: Context, onCountDownFinish: () -> Unit) {
+    val context = LocalContext.current
     var feedbackMessage by remember { mutableStateOf(context.getString(R.string.take_a_deep_breath)) }
     Column(
         modifier = Modifier.fillMaxSize(),

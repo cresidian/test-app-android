@@ -110,4 +110,7 @@ dependencies {
 
     //Camera
     implementation "io.github.ujizin:camposer:$camera_plugin"
+
+    //Player
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
 }
