@@ -1,4 +1,4 @@
-package com.android.testapp.presentation
+package com.android.testapp.presentation.videorecorder
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

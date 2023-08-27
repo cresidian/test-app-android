@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TestApp"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.VideoRecorderActivity"
+            android:name=".presentation.videorecorder.VideoRecorderActivity"
             android:exported="true"
             android:label="@string/title_activity_video_recorder"
             android:theme="@style/Theme.TestApp">
