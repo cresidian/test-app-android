@@ -32,9 +32,17 @@ class VideoPlayerActivity : AppCompatActivity() {
 
     private fun playVideo(uri: Uri) {
         val mediaItem: MediaItem = MediaItem.fromUri(uri)
-
         bind.exoPlayerView.player = simpleExoPlayer
         simpleExoPlayer!!.setMediaItem(mediaItem)
         simpleExoPlayer!!.prepare()
+    }
+
+    /**
+     *
+     * Stop the Video player when screen gets destroyed
+     * **/
+    override fun onDestroy() {
+        simpleExoPlayer?.stop()
+        super.onDestroy()
     }
 }

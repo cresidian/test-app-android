@@ -208,12 +208,22 @@ class VideoRecorderActivity : BaseActivity() {
         countDownTimer!!.start()
     }
 
+
+    /**
+     *
+     * Toggles the HUD visibility based on recording state
+     * **/
     private fun toggleVideoRecorderHudVisibility(isShow: Boolean) {
         bind.ivFaceFrame.setVisible(isShow)
         bind.tvCountdown.setVisible(isShow)
         bind.tvFeedback.setVisible(isShow)
     }
 
+
+    /**
+     *
+     * Releasing service and count down resources
+     * **/
     override fun onDestroy() {
         super.onDestroy()
         service?.shutdown()
